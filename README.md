@@ -513,7 +513,7 @@ Built a production-grade fraud detection system using XGBoost, SHAP, and FastAPI
 Abhijeet Singh Pawar
 
 * GitHub: [https://github.com/aspabhi31](https://github.com/aspabhi31)
-* LinkedIn: Add your LinkedIn URL here
+* LinkedIn: https://www.linkedin.com/in/abhijeet-singh-pawar-482576149/
 
 ---
 
