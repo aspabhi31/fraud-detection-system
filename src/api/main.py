@@ -75,3 +75,39 @@ def predict(transaction: TransactionInput):
         "risk_level": risk_level,
         "recommended_action": action
     }
+@app.post("/predict_batch")
+def predict_batch(transactions: list[TransactionInput]):
+    # Convert list of Pydantic objects → DataFrame
+    data = pd.DataFrame([t.model_dump() for t in transactions])
+
+    # Ensure correct feature order
+    data = data[feature_names]
+
+    # Batch prediction (FAST)
+    probabilities = model.predict_proba(data)[:, 1]
+    predictions = (probabilities >= threshold).astype(int)
+
+    results = []
+
+    for i in range(len(data)):
+        prob = float(probabilities[i])
+        pred = int(predictions[i])
+
+        if prob >= 0.90:
+            risk = "High"
+            action = "Block transaction"
+        elif prob >= threshold:
+            risk = "Medium"
+            action = "Manual review"
+        else:
+            risk = "Low"
+            action = "Approve transaction"
+
+        results.append({
+            "fraud_probability": round(prob, 6),
+            "prediction": pred,
+            "risk_level": risk,
+            "recommended_action": action
+        })
+
+    return {"results": results}
